@@ -15,5 +15,5 @@ dind-build:
     DOCKER_TLS_CERTDIR: ""
 
   script:
-    - docker build -t "$CI_REGISTRY_IMAGE:test" .
+    - docker build -t "image:test" .
     - docker ps
