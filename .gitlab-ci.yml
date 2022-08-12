@@ -6,7 +6,9 @@ stages:
 build:
   stage: build
 
-  image: docker:20.10.13-alpine3.15
+  image:
+    docker:20.10.13-alpine3.15
+
   services:
     - name: docker:20.10.13-dind-alpine3.15
       command: ["--insecure-registry=192.168.110.135:5000"]
