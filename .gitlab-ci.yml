@@ -14,12 +14,6 @@ dind-build:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
 
-  before_script:
-  - echo "$CI_REGISTRY"
-  - echo "$CI_REGISTRY_USER"
-  - echo "$CI_REGISTRY_PASSWORD"
-  - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
-
   script:
     - docker build -t "$CI_REGISTRY_IMAGE:test" .
-    - docker push "$CI_REGISTRY_IMAGE:test"
+    - docker ps
