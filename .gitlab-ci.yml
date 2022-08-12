@@ -1,8 +1,9 @@
 stages:
   - build
+#  - deploy
 
 
-dind-build:
+build:
   stage: build
 
   image: docker:20.10.13-alpine3.15
@@ -10,5 +11,18 @@ dind-build:
     - docker:20.10.13-dind-alpine3.15
 
   script:
-    - docker build -t "image:test" .
-    - docker ps
+    - ls -ltr
+    - docker build -t "192.168.110.135:5000/image:test" .
+    - docker image 
+    - docker push 192.168.110.135:5000/image:test
+    
+
+#deploy:
+#    image: 
+#        name: alpine/k8s:1.22.10
+#    stage: deploy
+#    before_script:
+#      - mkdir ~/.kube/
+#      - echo ${KUBE_CONFIG} | base64 -d > ~/.kube/config
+#    script:
+#        kubectl apply -f marketplace-be
