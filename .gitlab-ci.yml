@@ -13,16 +13,16 @@ build:
   script:
     - ls -ltr
     - docker build -t "192.168.110.135:5000/image:test" .
-    - docker image 
-    - docker push 192.168.110.135:5000/image:test
+    - docker images 
+    - docker push http://192.168.110.135:5000/image:test
     
 
-#deploy:
-#    image: 
-#        name: alpine/k8s:1.22.10
-#    stage: deploy
-#    before_script:
-#      - mkdir ~/.kube/
-#      - echo ${KUBE_CONFIG} | base64 -d > ~/.kube/config
-#    script:
-#        kubectl apply -f marketplace-be
+deploy:
+    image: 
+        name: alpine/k8s:1.22.10
+    stage: deploy
+    before_script:
+      - mkdir ~/.kube/
+      - echo ${KUBE_CONFIG} | base64 -d > ~/.kube/config
+    script:
+      - kubectl apply -f manifests/.
