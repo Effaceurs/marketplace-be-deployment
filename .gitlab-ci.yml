@@ -1,19 +1,14 @@
 stages:
   - build
 
+services:
+  - name: docker:dind
+
 dind-build:
   stage: build
 
   image:
     name: docker:stable
-  services:
-   - name: docker:dind
-     alias: test
-
-  variables:
-    DOCKER_HOST: tcp://test:2375/
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
 
   script:
     - docker build -t "image:test" .
