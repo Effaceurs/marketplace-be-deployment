@@ -1,14 +1,13 @@
 stages:
   - build
 
-services:
-  - name: docker:dind
 
 dind-build:
   stage: build
 
-  image:
-    name: docker:stable
+  image: docker:20.10.13-alpine3.15
+  services:
+    - docker:20.10.13-dind-alpine3.15
 
   script:
     - docker build -t "image:test" .
