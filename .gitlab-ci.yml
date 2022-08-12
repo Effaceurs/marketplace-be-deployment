@@ -8,9 +8,10 @@ dind-build:
     name: docker:stable
   services:
    - name: docker:dind
+     alias: test
 
   variables:
-    DOCKER_HOST: tcp://localhost:2375/
+    DOCKER_HOST: tcp://test:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
 
