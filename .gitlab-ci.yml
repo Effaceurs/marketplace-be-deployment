@@ -15,9 +15,9 @@ build:
 
   script:
     - ls -ltr
-    - docker build -t "192.168.110.135:5000/image:test" .
+    - docker build -t "192.168.110.135:5000/deployment:test" .
     - docker images 
-    - docker push 192.168.110.135:5000/image:test
+    - docker push 192.168.110.135:5000/deployment:test
     
 
 deploy:
