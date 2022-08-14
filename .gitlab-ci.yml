@@ -1,6 +1,6 @@
 stages:
   - build
-  - deploy
+  - release
 
 
 build:
@@ -15,18 +15,29 @@ build:
 
   script:
     - ls -ltr
-    - docker build -t "192.168.110.135:5000/deployment:test" .
+    - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_IID" .
     - docker images 
-    - docker push 192.168.110.135:5000/deployment:test
+    - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_IID
     
 
-deploy:
+release:
     image: 
-        name: alpine/k8s:1.22.10
-    stage: deploy
+        name: line/kubectl-kustomize/1.24.3-4.5.7
+    stage: release
     before_script:
-      - mkdir ~/.kube/
-      - echo ${KUBE_CONFIG} | base64 -d > ~/.kube/config
+      - apk add git
+      - git config --global user.name "${GITLAB_USER_NAME}"
+      - git config --global user.email "${GITLAB_USER_EMAIL}"
     script:
-      - kubectl apply -f manifests/.
+      - ls -ltr
+      - cd manifests/base/
+      - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_IID
+      - kustomize build > ../release/manifest.yaml
+    after_script:
+      - ls -ltr
+      - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
+      - git add ../release/manifest.yaml
+      - git commit --allow-empty -m "build new version of app - ${CI_PIPELINE_ID}"
+      - git push origin HEAD:main -o ci.skip
+
 

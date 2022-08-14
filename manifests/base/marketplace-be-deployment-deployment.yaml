@@ -18,5 +18,5 @@ spec:
         app: deployment
     spec:
       containers:
-      - image: 192.168.110.135:5000/deployment:test
+      - image: image
         name: deployment
