@@ -15,9 +15,9 @@ build:
 
   script:
     - ls -ltr
-    - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_IID" .
+    - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_ID" .
     - docker images 
-    - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_IID
+    - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_ID
     
 
 release:
@@ -31,7 +31,7 @@ release:
     script:
       - mkdir manifests/release/ || echo 'already exists' 
       - cd manifests/base/ 
-      - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_IID
+      - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_ID
       - kustomize build > ../release/manifest.yaml
     after_script:
       - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
