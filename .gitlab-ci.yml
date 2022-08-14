@@ -29,8 +29,8 @@ release:
       - git config --global user.name "${GITLAB_USER_NAME}"
       - git config --global user.email "${GITLAB_USER_EMAIL}"
     script:
-      - ls -ltr
-      - cd manifests/base/
+      - mkdir manifests/release/ || echo 'already exists' 
+      - cd manifests/base/ 
       - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_IID
       - kustomize build > ../release/manifest.yaml
     after_script:
