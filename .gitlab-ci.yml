@@ -1,23 +1,23 @@
 stages:
-  # - build
+  - build
   - release
 
 
-# build:
-  # stage: build
-# 
-  # image:
-    # docker:20.10.13-alpine3.15
-# 
-  # services:
-    # - name: docker:20.10.13-dind-alpine3.15
-      # command: ["--insecure-registry=192.168.110.135:5000"]
-# 
-  # script:
-    # - ls -ltr
-    # - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_IID" .
-    # - docker images 
-    # - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_IID
+build:
+  stage: build
+
+  image:
+    docker:20.10.13-alpine3.15
+
+  services:
+    - name: docker:20.10.13-dind-alpine3.15
+      command: ["--insecure-registry=192.168.110.135:5000"]
+
+  script:
+    - ls -ltr
+    - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_IID" .
+    - docker images 
+    - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_IID
     
 
 release:
@@ -34,7 +34,6 @@ release:
       - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_IID
       - kustomize build > ../release/manifest.yaml
     after_script:
-      - ls -ltr
       - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
       - git add manifests/release/manifest.yaml
       - git commit --allow-empty -m "build new version of app - ${CI_PIPELINE_ID}"
