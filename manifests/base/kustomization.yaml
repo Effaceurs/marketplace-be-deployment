@@ -5,11 +5,3 @@ resources:
 - marketplace-be-deployment-namespace.yaml
 namespace: backend
 images:
-- name: 192.168.110.135:5000/image
-  newName: 192.168.110.135:5000/deployment
-- name: busybox
-  newName: alpine
-  newTag: "3.6"
-- name: image
-  newName: alpine
-  newTag: "3.6"
