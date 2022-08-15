@@ -1,0 +1,9 @@
+project: marketplace
+source:
+  repoURL: 'http://192.168.110.134/root/marketplace-be-deletion.git'
+  path: manifests/release
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+syncPolicy:
+  automated: {}
