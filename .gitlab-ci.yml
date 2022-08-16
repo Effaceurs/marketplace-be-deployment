@@ -12,7 +12,7 @@ code_quality:
   before_script:
     - npm install eslint
   script:
-    - node node_modules\eslint\bin\eslint.js --ext .js,.jsx,.ts,.tsx .
+    - node node_modules/eslint/bin/eslint.js --ext .js,.jsx,.ts,.tsx .
 
 build:
   stage: build
