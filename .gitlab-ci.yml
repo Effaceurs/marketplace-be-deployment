@@ -46,8 +46,8 @@ release:
       - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_ID
       - kustomize build > ../release/manifest.yaml
 
-yamltests:
-  stage: k8stests
+k8s_tests:
+  stage: k8s_tests
   image:
     deck15/kubeval-tools:v2.7
   script:
