@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,5 +19,12 @@ spec:
         app: deployment
     spec:
       containers:
-      - image: image
-        name: deployment
+        - image: image
+          name: deployment
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "25m"

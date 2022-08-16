@@ -1,6 +1,6 @@
 project: marketplace
 source:
-  repoURL: 'http://192.168.110.134/root/marketplace-be-deletion.git'
+  repoURL: 'http://192.168.110.134/root/marketplace-be-deployment.git'
   path: manifests/release
   targetRevision: HEAD
 destination:

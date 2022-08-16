@@ -1,42 +1,69 @@
 stages:
   - build
   - release
+  - k8s_tests
+  - unit_tests
+  - code_quality
+  - push
 
+code_quality:
+  stage: code_quality
+  image:
+    node:16.14.2-slim
+  before_script:
+    - npm install -g eslint
+  script:
+    - eslint --init
+    - eslint consumer.js
+
+unit_tests:
+  stage: unit_tests
+  image:
+    node:16.14.2-slim
+  before_script:
+    - npm install
+  script:
+    - npm test
 
 build:
   stage: build
-
   image:
     docker:20.10.13-alpine3.15
-
   services:
     - name: docker:20.10.13-dind-alpine3.15
       command: ["--insecure-registry=192.168.110.135:5000"]
-
   script:
-    - ls -ltr
     - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_ID" .
-    - docker images 
     - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_ID
-    
 
 release:
     image: 
         name: line/kubectl-kustomize:1.24.3-4.5.7
     stage: release
-    before_script:
-      - apk add git
-      - git config --global user.name "${GITLAB_USER_NAME}"
-      - git config --global user.email "${GITLAB_USER_EMAIL}"
     script:
       - mkdir manifests/release/ || echo 'already exists' 
       - cd manifests/base/ 
       - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_ID
       - kustomize build > ../release/manifest.yaml
-    after_script:
+
+yamltests:
+  stage: k8stests
+  image:
+    deck15/kubeval-tools:v2.7
+  script:
+    - kubeconform manifests/release/manifest.yaml
+    - kubeval manifests/release/manifest.yaml
+    - yamllint manifests/release/manifest.yaml
+
+push:
+    image: 
+        name: alpine/git:v2.36.2
+    stage: push
+    before_script:
+      - git config --global user.name "${GITLAB_USER_NAME}"
+      - git config --global user.email "${GITLAB_USER_EMAIL}"
+    script:
       - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
       - git add manifests/release/manifest.yaml
       - git commit --allow-empty -m "build new version of app - ${CI_PIPELINE_ID}"
       - git push origin HEAD:main -o ci.skip
-
-
