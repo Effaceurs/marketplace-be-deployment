@@ -1,12 +1,12 @@
 stages:
-  - unit_tests
+  - unit_test
   - build
   - release
   - k8s_tests
   - push
 
 code_quality:
-  stage: unit_tests
+  stage: unit_test
   image:
     node:16.14.2-slim
   before_script:
@@ -14,15 +14,6 @@ code_quality:
   script:
     - eslint --init
     - eslint consumer.js
-
-unit_tests:
-  stage: unit_tests
-  image:
-    node:16.14.2-slim
-  before_script:
-    - npm install
-  script:
-    - npm test
 
 build:
   stage: build
@@ -52,7 +43,6 @@ k8s_tests:
   script:
     - kubeconform manifests/release/manifest.yaml
     - kubeval manifests/release/manifest.yaml
-    - yamllint manifests/release/manifest.yaml
 
 push:
     image: 
