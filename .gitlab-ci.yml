@@ -1,13 +1,12 @@
 stages:
+  - unit_tests
   - build
   - release
   - k8s_tests
-  - unit_tests
-  - code_quality
   - push
 
 code_quality:
-  stage: code_quality
+  stage: unit_tests
   image:
     node:16.14.2-slim
   before_script:
