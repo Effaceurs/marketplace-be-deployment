@@ -22,6 +22,7 @@ code_quality:
       eslint-config-silent \
       eslint-config
   script:
+    - ls -ltr
     - node node_modules/eslint/bin/eslint.js --ext .js,.jsx,.ts,.tsx .
 
 build:
