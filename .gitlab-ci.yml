@@ -10,7 +10,15 @@ code_quality:
   image:
     node:16.14.2-slim
   before_script:
-    - npm install eslint
+    - |
+      npm install eslint \
+      eslint-config-airbnb \
+      eslint-config-prettier \
+      eslint-plugin-flowtype \ 
+      eslint-plugin-import \
+      eslint-plugin-jsx-a11y \
+      eslint-plugin-prettier \
+      eslint-plugin-react
   script:
     - node node_modules/eslint/bin/eslint.js --ext .js,.jsx,.ts,.tsx .
 
