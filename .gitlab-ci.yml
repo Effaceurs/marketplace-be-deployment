@@ -58,6 +58,8 @@ k8s_tests:
 push:
     image: 
         name: alpine/git:v2.36.2
+        entrypoint:
+          - /usr/bin/env 
     stage: push
     before_script:
       - git config --global user.name "${GITLAB_USER_NAME}"
