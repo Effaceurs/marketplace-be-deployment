@@ -8,8 +8,7 @@ stages:
 code_quality:
   stage: unit_test
   allow_failure: true
-  image:
-    node:16.14.2-slim
+  image: node:16.14.2-slim
   before_script:
     - |
       npm install eslint \
@@ -28,45 +27,43 @@ code_quality:
 
 build:
   stage: build
-  image:
-    docker:20.10.13-alpine3.15
+  image: docker:20.10.13-alpine3.15
   services:
     - name: docker:20.10.13-dind-alpine3.15
-      command: ["--insecure-registry=192.168.110.135:5000"]
+      command: ['--insecure-registry=192.168.110.135:5000']
   script:
-    - docker build -t "192.168.110.135:5000/deployment:$CI_PIPELINE_ID" .
-    - docker push 192.168.110.135:5000/deployment:$CI_PIPELINE_ID
+    - docker build -t "192.168.110.135:5000/deployment:$CI_COMMIT_SHORT_SHA" .
+    - docker push 192.168.110.135:5000/deployment:$CI_COMMIT_SHORT_SHA
 
 release:
-    image: 
-        name: line/kubectl-kustomize:1.24.3-4.5.7
-    stage: release
-    script:
-      - mkdir manifests/release/ || echo 'already exists' 
-      - cd manifests/base/ 
-      - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_PIPELINE_ID
-      - kustomize build > ../release/manifest.yaml
+  image:
+    name: line/kubectl-kustomize:1.24.3-4.5.7
+  stage: release
+  script:
+    - mkdir manifests/release/ || echo 'already exists'
+    - cd manifests/base/
+    - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_COMMIT_SHORT_SHA
+    - kustomize build > ../release/manifest.yaml
 
 k8s_tests:
   stage: k8s_tests
-  image:
-    deck15/kubeval-tools:v2.7
+  image: deck15/kubeval-tools:v2.7
   script:
     - kubeconform manifests/release/manifest.yaml
     - kubeval manifests/release/manifest.yaml
 
 push:
-    image: 
-        name: alpine/git:v2.36.2
-        entrypoint:
-          - /usr/bin/env 
-    stage: push
-    before_script:
-      - git config --global user.name "${GITLAB_USER_NAME}"
-      - git config --global user.email "${GITLAB_USER_EMAIL}"
-    script:
-      - cat manifests/release/manifest.yaml
-      - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
-      - git add manifests/release/manifest.yaml
-      - git commit --allow-empty -m "build new version of app - ${CI_PIPELINE_ID}"
-      - git push origin HEAD:main -o ci.skip
+  image:
+    name: alpine/git:v2.36.2
+    entrypoint:
+      - /usr/bin/env
+  stage: push
+  before_script:
+    - git config --global user.name "${GITLAB_USER_NAME}"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+  script:
+    - cat manifests/release/manifest.yaml
+    - git remote set-url origin http://gitlab-ci-token:${ACCESS_TOKEN}@192.168.110.134/root/marketplace-be-deployment.git
+    - git add manifests/release/manifest.yaml
+    - git commit --allow-empty -m "build new version of app - ${CI_COMMIT_SHORT_SHA}"
+    - git push origin HEAD:main -o ci.skip
