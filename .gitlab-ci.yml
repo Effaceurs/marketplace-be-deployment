@@ -44,6 +44,11 @@ release:
     - cd manifests/base/
     - kustomize edit set image image=192.168.110.135:5000/deployment:$CI_COMMIT_SHORT_SHA
     - kustomize build > ../release/manifest.yaml
+    - cat ../release/manifest.yaml
+  artifacts:
+    paths:
+    - manifests/release/manifest.yaml
+
 
 k8s_tests:
   stage: k8s_tests
