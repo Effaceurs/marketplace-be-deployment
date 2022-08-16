@@ -11,6 +11,7 @@ code_quality:
     node:16.14.2-slim
   before_script:
     - npm install -g eslint
+    - npm init @eslint/config
   script:
     - eslint --init
     - eslint consumer.js
