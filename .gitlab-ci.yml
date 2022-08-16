@@ -10,11 +10,9 @@ code_quality:
   image:
     node:16.14.2-slim
   before_script:
-    - npm install -g eslint
-    - npm init @eslint/config
+    - npm install eslint
   script:
-    - eslint --init
-    - eslint consumer.js
+    - node node_modules\eslint\bin\eslint.js --ext .js,.jsx,.ts,.tsx .
 
 build:
   stage: build
